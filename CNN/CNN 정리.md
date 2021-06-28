@@ -159,10 +159,14 @@ Flatten Layer의 경우 Fully connected neural network로 바꿔주는 역할을
 ---
 
 [^1]:출처 : https://ko.wikipedia.org/wiki/%ED%95%A9%EC%84%B1%EA%B3%B1 
+ 
 [^2]: 출처 : https://ko.wikipedia.org/wiki/%ED%95%A9%EC%84%B1%EA%B3%B1
+ 
 [^3]:출처: http://deeplearning.stanford.edu/wiki/index.php/Feature_extraction_using_convolution*
 
 [^4]:출처 : http://taewan.kim/post/cnn/
+ 
 [^ 5]:출처: https://taewanmerepo.github.io/2018/01/cnn/conv2.jpg
+ 
 [^ 6]:출처 : https://www.researchgate.net/figure/Architecture-of-our-unsupervised-CNN-Network-contains-three-stages-each-of-which_283433254
 
