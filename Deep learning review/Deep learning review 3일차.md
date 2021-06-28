@@ -1,0 +1,25 @@
+## Deep learning review
+
+###### LeCun, Yann, Yoshua Bengio 및 Geoffrey Hinton.
+
+3문단
+
+Backpropagation to train multilayer architectures
+
+초기 패턴인식에서 중요한 것은 hand-engineered features를 trainable multilayer network로 바꿔주는 것인데(왜냐하면 전문적인 지식이나 숙련이 요구되는 hand-engineered feature를 deep learning 으로 바꿔준다면 조금 더 쉽게 이를 계산할 수 있기 때문이다.(독자의 생각)), 이는 간단한 SGD로 train될 수 있었다. objective function(= loss function)의 gradient 를 구하기 위해서 backpropagation을 사용하는데, backpropagation은 단지 multilayer stack의 weight 관점에서 derivative 에 대한 chain rule 로 표현 할 수 있다는 것이다. 중요하게 바라볼 점은 module의 output 에서 gradient를 backward working 시켜서 module의 input에 대해 objective의 gradient를 구하는 방법이라는 점이다.(= output을 최상단(제일 처음)으로 두고 input으로 가면서 propagate 하는 것)
+
+현재 자주 쓰이는 non-linear function은 Relu(rectified linear unit) 이는 half-wave-rectifier와 같은 동작을 한다. f(z) = max(z,0). 과거에는 tanh(z)와 같은 non-linear 함수를 썼지만 많은 layer를 가지는 network의 경우 relu함수가 훨씬 빨리 학습했다. Unit은 기본적으로 hidden-layer에 있으며 input을 distorting(왜곡) 하는 것처럼 보여진다.
+
+이렇게 자주쓰이던 NN과 backpropagation은 머신러닝 커뮤니티에서 한순간에 버림받게 되는데 이는 simple gradient descent가 local minima에 빠지는 현상 때문이었다. 그러나 실질적으로는 local minima에 빠지는 것이 large network에서는 거의 문제가 되지 않았다.초기 조건에 관계없이 large network는 solution과 매우 비슷한 결과를 낸다. 즉 local minima는 일반적으로 심각한 문제를 일으키지 않는다. 대신 landscape는 많은 수의 saddle point(기울기가 0인 부분)를 갖게 되는데 위로 볼록 하거나 아래로 볼록한 saddle point가 있을 수 있다. 여기서 많은 수의 아래로 볼록한 saddle point 모두 object function과 매우 비슷한 값을 가진다. 따라서 위에서 언급했듯이 큰 문제가 되지 않는다.
+
+feedforward(순방향) network에서 CIFAR(Canadian Institute for Advanced Research)에 의해 unsupervised learning 구조가 소개되었다. 이는 labelled data를 필요로 하는 supervised learning과는 달리 labelled data가 없거나 적더라도 feature detector의 layer를 만들 수 있다.
+
+각각의 layer에서의 objective function은 다시 재구성 되거나 모델을 만들 수 있는데, 무엇에 대한 모델이나면, feature detector 또는 raw inputs에 대한 활동을 layer에다가 재구성 시킬 수 있다. 이를 사용해 더 복잡하고 점진적으로 feature detector의 몇몇 layer를 pre-training 함으로써 deep network의 weight값이 더 sensible한 값이 된다.
+
+![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/2c97f58d-bc26-471b-8954-8e620f7308c3/PNG_.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/2c97f58d-bc26-471b-8954-8e620f7308c3/PNG_.png)
+
+(위 논문 발췌된 부분은 말로 설명하는 것보다 영어로 설명이 더 잘 되어 있어서 가져왔다)
+
+small data set에서 unsupervised pre-training은 과적합(overfitting)을 방지해준다. 또한 transfer learning을 위해 transfer setting을 해주는데 , 'source' task 는 많지만 'target' task 는 적은 transfer setting에서 deep learning이 다시 만들어지면, small data set 만으로 충분히 복구 및 학습이 가능하다는 것을 보여준다.
+
+인접한 layer 사이에 fully connected 된 network 보다 더 향상된 성능을 보이며 train과 generalize하기 쉬운 network가 있는데 이것이 바로 ConvNet이다. Convnet은 neural network의 관심이 뜸했을 당시 실질적으로 성공했떤 network이다. 이는 computer vision community에 의해 폭 넓게 채택되었다.
