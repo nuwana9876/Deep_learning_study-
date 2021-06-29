@@ -1,0 +1,27 @@
+## Deep learning review
+
+###### LeCun, Yann, Yoshua Bengio 및 Geoffrey Hinton.
+
+4문단
+
+Convolution neural networks
+
+ConvNet은 다중 배열을 처리한 데에 사용되어졌는데, 예를 들어 1차원에서는 신호와 sequence, 2차원에서는 이미지와 audio spectrogram, 3차원에서는 비디오등을 다중 배열로 사용하고 이를 처리하는 데 주로 사용되었다. 원본 신호들의 특성을 잘 찾아내기 위해서 4개지의 key idea를 사용했다 : local connections, shared weights, pooling and use of many layers.
+
+Stage는 2개의 layer 타입으로 구성되어 있으며 이 2개로 구성된 stage의 series로 ConvNet이 구성되어있다. : layer 1 → convolution layer, layer 2→ pooling layer
+
+convolution layer는 feature map들로 구성되어 있는데, 각 unit들은 filter bank라 불리는 가중치들의 집합을 통해 이전 convolution layer의 feature map에서 local patch로 연결되어 있다.(이전 convolution layer의 입력 데이터와 filter와의 convolution 곱들의 합을 feature map이라고 하며 이 결과가 활성화 함수를 통과하면 activation map 이라고 한다. )
+
+한 feature map에서 나오는 모든 unit들은 same filter bank를 공유한다 = 다른 feature map에서 나오는 unit들은 다른 filter bank를 사용한다. ⇒(독자의 생각으로는 filter bank는 결국 이미지와 같은 배열에서 테두리나 선과 같은 특징을 뽑아내게 되는데 , 이 때 같은 특징이라면 같은 가중치로 convolution 계산을 해서 특징을 뽑아내야 하고 이를 위와 같은 표현으로 나타낸 것이라 생각한다. )
+
+Convolution layer의 역할은 위에서 언급했듯이 이전 layer로 부터 특징들의 결합을 발견해내는 것이라면, Pooling layer의 역할은 의미상 같은 특징들을 하나로 합쳐주는 역할을 가진다. 전형적으로 pooling unit은 하나의 feature map의 local patch의 maximum으로 구해진다. Pooling layer는 patch를 통해서 옆으로 1칸 또는 일정한 칸만큼 행 또는 열을 이동하면서 dimension이 줄고, 작은 변화와 왜곡에도 값의 변화가 없도록 만들어주는 역할을 한다.
+
+초기 1990년도에는 음성 인식과 document reading에 시작이 더뎌있었고, 이 때 ConvNet은 document reading에 사용되었다. 1990년대 후반에는 미국 전체 수표의 10퍼센트 이상을 이 체계를 이용했으며 많은 수의 ConvNet 기반의 optical character 인식이나 손 글씨 인식 시스템이 microsoft에서 사용되었다.
+
+5문단
+
+Image understanding with deep convolutional networks
+
+2000년대 초 이후로 ConvNet은 detection , segmentation, recognition of objects등 많은 활용이 되었는데, 그러다보니 labelled data가 상대적으로 풍부했다. 최근 활용된 것은 face recognition인데 pixel수준에서 이미지를 labeling 할 수 있고, 이를 자율 동작 로봇이나 자율 주행차 등에 이용했다. 비록 이런 성공에도 불구하고 ConvNet은 ImageNet competition이 있기 전까지 무시받았었다고 한다.
+
+이러한 성공의 기반으로는 GPU의 효율적인 사용과, RELU함수 , dropout과 같은 새로운 정규화 기술, 그리고 기존의 데이터를 변형시키므로써 더 많은 데이터를 만들어 적용하는 기술이 있다. 또한 최근에는 많은 양의 데이터를 다루고 이를 위해 수백만의 weight, 수천만의 연결로 인해 학습시키는데에 약 1주정도가 소요된다. 이 부분은 hardware의 발전과 알고리즘의 병렬화로 시간이 조금 줄어 들었다.
