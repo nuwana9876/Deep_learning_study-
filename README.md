@@ -3,3 +3,4 @@
 1. Deep learning review
 2. AlexNet
 3. CNN
+4. VGGNet
