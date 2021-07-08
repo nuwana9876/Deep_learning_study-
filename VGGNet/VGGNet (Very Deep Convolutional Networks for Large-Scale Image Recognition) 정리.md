@@ -16,11 +16,11 @@ The effect of the convolutional network depth on its accuracy in the large-scale
 
 ### 1.Introduction
 
-###### <img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210707073324872.png" width = 90% height = 90%>
+###### <img src = "https://user-images.githubusercontent.com/78463348/124843275-97522e80-dfcc-11eb-8082-b1d39ea9490a.PNG" width = 90% height = 90%>
 
-<left><img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210707072645551.png" width = 90% height = 90%>
+<left><img src = "https://user-images.githubusercontent.com/78463348/124843294-9faa6980-dfcc-11eb-9b45-4ef16aadc2c6.PNG" width = 90% height = 90%>
 
-<left><img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210707072712583.png" width = 90% height = 90%>
+<left><img src = "https://user-images.githubusercontent.com/78463348/124843295-a0430000-dfcc-11eb-8c7b-f1c3d155744b.PNG" width = 90% height = 90%>
 
 ConvNet이 어느덧 computer vision 영역에서 유용한 역할을 하게 되면서, 기존 AlexNet구조를 향상시키기 위해 많은 시도들이 있었습니다.  이번 논문에서는 'depth'라는 ConvNet architecture의 중요한 측면을 다루고자 합니다. 우리는 이 구조의 다른 parameter들을 고정시키고 꾸준히 convolution layer들을 추가시키므로써 depth를 증가시켰습니다. 이는 모든 layer에 3x3 convolution filter와 같은 매우 작은 filter를 사용했기에 가능했습니다.
 
