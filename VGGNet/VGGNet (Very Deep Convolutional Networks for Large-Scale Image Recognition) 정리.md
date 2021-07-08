@@ -68,7 +68,7 @@ configurations 에서는 A에서 E까지의 구조로 나뉠 수 있는데, 모�
 
 
 
-<img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210707082206913.png">
+<img src = "https://user-images.githubusercontent.com/78463348/124843860-cfa63c80-dfcd-11eb-9f6c-4d2c553e6143.PNG">
 
 <left><img src = "https://user-images.githubusercontent.com/78463348/124843299-a1742d00-dfcc-11eb-9eff-83039ab2ff0f.PNG">
 
