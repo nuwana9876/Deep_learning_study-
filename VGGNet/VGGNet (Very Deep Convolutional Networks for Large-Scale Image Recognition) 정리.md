@@ -10,7 +10,7 @@ AlexNet의 등장 이후 image classification분야에서 CNN 모델이 주목�
 
 ### 0.Abstract
 
-<left><img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210707072504559.png" width = 90% height = "90%">
+<left><img src = "https://user-images.githubusercontent.com/78463348/124843218-6b36ad80-dfcc-11eb-8ab6-82df7df39aa2.PNG" width = 90% height = "90%">
 
 The effect of the convolutional network depth on its accuracy in the large-scale image recognition , Increasing depth using an architecture with very small (3X3) convolution filters 이라는 내용이 중요한데 즉, 3X3 convolution filter를 이용하고, layer의 개수를 16~19만큼 deep하게 늘려서 increasing depth를 만들었고, 이를 통해 large-scale image recognition에서 좋은 결과를 얻었다는 것을 알 수 있습니다.
 
