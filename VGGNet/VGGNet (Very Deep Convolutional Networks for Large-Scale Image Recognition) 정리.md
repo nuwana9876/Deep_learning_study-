@@ -32,7 +32,7 @@ ConvNet이 어느덧 computer vision 영역에서 유용한 역할을 하게 되
 
 VGGNet의 기본설정에 대해 언급한다.
 
-<left><img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210707072741436.png" width = 90% height = 90%>
+<left><img src = "https://user-images.githubusercontent.com/78463348/124843297-a0db9680-dfcc-11eb-8692-897461b7110b.PNG" width = 90% height = 90%>
 
 ConvNet의 input은 224X224 RGB 이미지로 고정합니다. Input image(Traininng Dataset)에 대한 preprocessing은 RGB mean value만 빼주는 것만 적용합니다. (RGB mean value란?  이미지 상에 pixel들이 갖고 있는 R,G,B 각각의 값들의 평균을 의미합니다)
 
@@ -56,7 +56,7 @@ Convolution layer가 stack 된 이후에 FC layer가 등장하게 되는데, 총
 
 ### 2-2. Configurations
 
-<img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210707080650461.png">
+<img src = "https://user-images.githubusercontent.com/78463348/124843298-a1742d00-dfcc-11eb-9365-f12c9ca89a44.PNG">
 
 configurations 에서는 A에서 E까지의 구조로 나뉠 수 있는데, 모든 구조는 2.1에서 설명한 구조를 그대로 따르되, 단지 깊이를 조금씩 변형시키면서 연구를 진행한것이라고 언급했습니다. Layer는 11 weight 부터 19 weight layer까지 구성되어 있으며 구조는 Table 1에 잘 표현 되어 있습니다.
 
@@ -64,15 +64,15 @@ configurations 에서는 A에서 E까지의 구조로 나뉠 수 있는데, 모�
 
 
 
-<img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210707080927338.png">
+<img src = "https://user-images.githubusercontent.com/78463348/124843303-a20cc380-dfcc-11eb-9398-25104dd62d43.PNG">
 
 
 
 <img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210707082206913.png">
 
-<left><img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210707082540457.png">
+<left><img src = "https://user-images.githubusercontent.com/78463348/124843299-a1742d00-dfcc-11eb-9eff-83039ab2ff0f.PNG">
 
-<img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210707082304803.png" >
+<img src = "https://user-images.githubusercontent.com/78463348/124843306-a2a55a00-dfcc-11eb-8521-2c8c7e833414.PNG" >
 
 이후 깊이를 늘렸음에도 불구하고, .weight의 개수 (Parameter의 개수) 가 더 늘어나지 않는 다는 것을 보여줍니다.
 
@@ -80,11 +80,11 @@ configurations 에서는 A에서 E까지의 구조로 나뉠 수 있는데, 모�
 
 ### 2-3. Discussion
 
-<left><img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210707101059272.png">
+<left><img src = "https://user-images.githubusercontent.com/78463348/124843300-a20cc380-dfcc-11eb-95c3-12dc98c9d06b.PNG">
 ​    
 첫번째 convolution에서 상대적으로 large receptive fields를 쓰기 보다 3X3의 작은 receptive fields를 사용했습니다.  이유는 3X3 convolution layer를 쌓는 것이 5X5 convolution filter를 사용하는 것과 같은 효과를 가져오기 때문입니다.  즉 5X5 conv filter를 3X3 conv filter 2개로 나누어(factorizing) 사용한다고 합니다.
 
-<left><img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210708075535643.png" width = 90% height = 90%>
+<left><img src = "https://user-images.githubusercontent.com/78463348/124843307-a33df080-dfcc-11eb-832f-d701c81d9033.PNG" width = 90% height = 90%>
 
 <left><img src = "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2F59CI0%2FbtqAPdxQrQQ%2FNIX745po8xCjtzMtMcvnGK%2Fimg.png" width = 70% height = 70%>
 
@@ -100,7 +100,7 @@ configurations 에서는 A에서 E까지의 구조로 나뉠 수 있는데, 모�
 
 
 
-<left><img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210708080754023.png" width = 90% height = 90%>
+<left><img src = "https://user-images.githubusercontent.com/78463348/124843309-a33df080-dfcc-11eb-9ae7-b871a906c8ba.PNG" width = 90% height = 90%>
 
 또한 VGG C  모델에는 1X1 conv layer도 적용하는데, 이유는 기존 receptive field에 영향을 주지않고 non-linearity를 증가시키기 위해서라고 합니다.
 
@@ -110,7 +110,7 @@ configurations 에서는 A에서 E까지의 구조로 나뉠 수 있는데, 모�
 
 ### 3-1. Training
 
-<left><img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210708082955367.png" width = 90% height = 90%>
+<left><img src = "https://user-images.githubusercontent.com/78463348/124843310-a3d68700-dfcc-11eb-9f63-ea966733b3a9.PNG" width = 90% height = 90%>
 
 일단 hyperparameter들을 어떤 값으로 설정했는지 소개하고 있습니다.
 
