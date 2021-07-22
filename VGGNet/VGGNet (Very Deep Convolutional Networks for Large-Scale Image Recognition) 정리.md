@@ -4,7 +4,7 @@ VGGNet 정리는 Time Traveler님의 VGGNet 논문 리뷰를 참고해서 만들
 
 > ###### https://89douner.tistory.com/61 (여기 진짜 논문 맛집입니다!)
 
-
+해당 논문 출처 : https://arxiv.org/pdf/1409.1556.pdf
 
 AlexNet의 등장 이후 image classification분야에서 CNN 모델이 주목을 받았습니다. 이후 ILSVRC 2014년 대회에 VGGNet과 GoogLeNet 모델이 등장하게 됩니다. 특히 이 두 모델은 AlexNet보다 더 깊은 layer를 쌓아서 뛰어난 성능을 자랑합니다. ILSVRC 대회에서는 GoogLeNet보다 이미지 분류 성능은 낮았지만, 다른 연구에서는 좋은 성능을 보입니다.(Appendix).  안타깝게도 GoogLeNet에 이어 2위를 차지한 VGGNet에 대해서 정리하도록 하겠습니다.
 
