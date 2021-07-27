@@ -5,3 +5,4 @@
 3. CNN
 4. VGGNet
 5. R-CNN 
+6. GoogLeNet
