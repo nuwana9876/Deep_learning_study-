@@ -136,7 +136,153 @@ b) pre-initialisation
 
 - Pre-initialisation이란 먼저 학습하고 난 모델의 layer를 가져다가 쓰는 방식으로 진행하는 것을 말하는데, 여기서는 VGG-A 모델(16 layer) 을 학습하고, 이후 B,C,D,E 모델을 구성할 때 학습된 layer를 가져다 쓴다. 자세히 나타내면 A 모델의 처음 4개 conv layer와 마지막 3개 FC layer를 사용했다고 한다. 이 방식으로 통해 최적의 초기값을 설정해줘서 학습을 용이하게 해준다.
 
+- 
 
+<left><img src = "C:/Users/Park%20Jun%20Tae/Desktop/%EB%94%A5%EB%9F%AC%EB%8B%9D%20md%ED%8C%8C%EC%9D%BC/%EB%85%BC%EB%AC%B8%EC%9D%B8%EC%9A%A9%20%EC%82%AC%EC%A7%84%ED%8C%8C%EC%9D%BC%20%EB%AA%A8%EC%9D%8C/VGGNet/VGGNet%EB%85%BC%EB%AC%B8%EC%9D%B8%EC%9A%A915.PNG" width = "80%" height = "80%">
+
+
+
+#### Training image size
+
+VGGNet 모델을 학습할 때, 먼저 training image를 VGG모델의 input size에 맞게 바꿔줘야 한다. 
+
+<left><img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210709105951984.png" width = 90% height = 90%>
+
+
+예를 들어 S라고 하는 smallest side를 256이라고 하면, training image의 넓이 또는 높이 중에서 더 작은 side를 256으로 줄여준다. 이 때 aspect ratio를 유지하면서 나머지 side도 rescaling을 해주는데 이런 방식을 "isotropically-rescaled" 했다고 한다.
+
+<left><img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210709110412049.png">
+
+
+위와 같이 training image를 isotropically-rescaled 해줬다면, 이후에는 224X224의 크기로 random하게 crop해준다.
+
+<left><img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210709111200783.png" width = 90% height = 90%>
+
+
+S를 설정하는 방식에는 두 가지가 있는데, 첫번째로는 S를 256 or 384로 고정하는 방식이다. 이를 우리는 'Single-scale training'이라고 한다. S = 384로 설정했을 때 , .training을 빨리 하기 위해서 S가 256일 때 학습시킨 가중치로 initialize 두고 학습을 시키게 된다. 학습 시에는 learning rate를 10^(-3)으로 줄여주고 학습을 시킨다.
+
+<left><img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210709111835805.png" width = "90%" height = 90%>
+
+
+<left><img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210709111923580.png" width = 90% height = 90%>
+
+
+두번째로는 'multi-scale training'이라는 방식을 사용하는데, 이는 S를 고정하지 않고 Smin에서 Smax사이의 값 중에서 random하게 설정해주는 방식이다. 객체(Object)들이 모두 같은 사이즈가 아니라 각각 다를 수가 있기 때문에 random하게 multi-scale로 학습시키면 학습 효과가 더 좋아질 수 있다. 
+
+이러한 data augmentation 방식을 'Scale jittering'이라고 부른다.
+
+Multi-scale training을 학습 시킬 때는 빠르게 학습시키기 위해서, 먼저 학습시킨 single scale training 방식을 이용한 모델을 가지고 이를 이용해 fine-tuning을 해준다.
+
+<left><img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210709113339988.png" width = 90% height = 90%>
+Test 할 때에도 train 할 때와 마찬가지로 rescaling을 적용한다. Training에서는 rescaling시에 기준 값을 S라고 했지만, test에서는 rescaling시에 기준 값을 Q라고 한다. S와 Q가 같을 필요는 없다. 오히려 training  image에서 설정된 S값마다 다른 Q를 적용하면 성능이 더 좋아진다고 한다. 
+
+
+중요한 점은 VGGNet 모델은 training할 때랑 중간중간 overfitting을 막기위해 Testing(Validation)할 때 쓰이는 CNN 구조가 약간 다르다.
+
+Test에서는 첫번째 FC layer를 7X7 conv layer로 바꿔주고, 마지막 FC layer 두 개를 1x1 conv layer로 바꿔준 것이 training과 다른 점이다. 이를 통해 training에서와 달리 uncropped image에 적용할 수 있다는 점이 장점이다.
+
+
+<left><img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210709114223466.png">
+
+
+<right><img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210709114255201.png">
+
+
+제일 위의 사진은 feature map이 FC layer를 통과하기 전에, flatten 하는 순서를 나타낸 것이다. 그 밑의 사진은 feature map이 1X1 conv filter를 적용하는 사진인데, 이를 비교해 봤을 때, flatten 하는 순서에 영향이 있을 뿐, 구조 자체는 FC layer와 conv layer 모두 동일하다는 것을 알 수 있다.
+
+<img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210709115842205.png" align = "left" width = 50% height = 50%><img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210709120034856.png" align = "right" width  = 50% height = 50%>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(왼쪽의 사진은 Test에서의 VGGNet 구조이며, 오른쪽 사진은  Training에서의 VGGNet 구조이다. 왼쪽 이미지 상에서는 fully-connected라고 설명이 되어있지만, 실제로는 3개의 1X1 conv layer인 것이다.)
+
+어찌보면 논문을 읽었을 때 가장 헷갈렸던 부분이 있었는데, 바로 The result is a class score map with the number of channels equal to the number of classes, and a variable spatial resolution, dependent on the input image size. Finally, to obtain a fixed-size vector of class scores for the image, the class score map is spatially averaged (sum-pooled). 라는 부분이다.
+
+다들 공통적으로 이해가 안 갔을 거라고 나는 생각한다.(물론 아닐 수도 있다....) 
+
+위에서 잠깐 언급했듯이 Training시에는 crop하는 방법을 사용하지만, Test시에는 FC layer를 conv layer로 바꿔줘서 uncropped image에 적용할 수 있다고 한다. 즉 , FC layer의 경우 MLP(Multi-Layer Perceptron)으로, 사실상 각 perceptron의 입력과 출력 노드가 정해져 있기 때문에 항상 입력 노드가 정해준 값과 동일해야한다. 그러나 conv 연산의 경우, 신경쓰지 않아도 된다.  *기존 crop을 통해 얻은 224X224 입력 image size가 VGG model에 입력되었을 때, classifier에 해당하는 부분 (FC layer가 1X1 conv layer로 바뀐 부분)을 거친 최종 output feature map size가 입력 image size에 따라 서로 달라집니다.* (사실 이 부분은 잘 이해되지 않는다.)
+
+<img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210709122325547.png" align = "left">
+
+위 그림에서 보다시피, output feature map size가 1X1이 아닌 경우가 있을 수 있다. 상단 그림의 경우, classifier 단계(1X1 conv filter가 적용되기 시작하는 부분)에서 1X1 conv filter가 feature map에 잘 적용 된 것으로 보이지만, 아래 그림의 경우 1X1 conv filter가 feature map size와 다르다는 것을 알 수 있다.
+
+만약 큰 이미지가 입력으로 들어오게 되면 1X1 conv filter를 적용할 때, feature map size가 1X1이 아닌 7X7이 될 수도 있습니다. 즉, 1X1 conv filter를 거치고 softmax에 들어가기 전 output feature map size가 이미지 크기에 따라 달라지는데, 7X71000 output feature map size를 얻을 수도 있다는 것이다. 이 때, 7X7 output feature map을 class score map이라고 한다. 이 feature map들을 spatially averaged 해준다. (대략적으로 mean or average pooling을 한다고 해석)
+
+이후 softmax이후에 filpped image와 original image의 평균값을 통해 최종 score를 출력하게 된다.
+
+<img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210709124849125.png">
+
+AlexNet의 경우, Test시에 1개의 이미지에 대해 좌상단,우상단,가운데,좌하단,우하단으로 crop하고 각각 이미지를 좌우반전시켜서 10개의 augmented images를 사용한다. 이 이미지들을 평균을 취하는 방식으로 최종 score를 출력한다.(Softmax의 결과 확률값이 나오는데 각각의 class에서 나오는 10개의 값들에 대해 평균)이로 인해 계산량이 많아져 속도가 느려진다. 그러나 FC layer를 1X1 conv layer로 대체하고 큰 이미지를 넣어 학습을 시켰고, 또한 data augmentation도 horizontal filpping 만 적용했는데도 좋은 효과가 났다고 한다.
+
+<img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210712075924180.png">
+
+VGGNet에서는 GoogleNet에서 사용한 multi-crop 방식이 좋은 성능을 보인다는 점을 알고, VGGNet의 dense evaluation을 보완하기 위한 방안으로 multi-crop evaluation을 같이 사용했다고 한다. 이후 두 가지 방식을 적절히 활용해서 validation한 결과 좋은 성능을 낸 것으로 확인되었다.
+
+
+
+### 4. Classification Experiments
+
+<img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210712080608196.png"><img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210712080655312.png">
+
+Dataset은 ILSVRC-2012를 사용했으며, 이미지의 class는 1000개로 나뉘어 있고 dataset은 train (1.3M), valid (50K), test set (100K)으로 나뉘어 있다. 또한 classification 평가는 top-1과 top-5 error를 보고 확인 할 수 있다. top-1 error는 multi-class classificaiton error , top-5 error는 기존 ILSVRC에서 요구하는 test 기준을 사용했다고 한다.
+
+대부분의 experiment에서 validation set을 test set으로 사용했다고 한다.
+
+
+
+### 4.1 Single Scale Evaluation
+
+Single scale evaluation이란 앞서 설명되었듯이, test시에 image size(scale)이 고정되어 있는 것을 의미한다. training image size를 설정해주는 방식에는 두 가지 방식이 있었는데, 첫번째는 training image size (S)를 256 or 384로 fix시켜주는 single scaling training과 두번째로는 256~512 size에서 random하게 골라 multi-scaling training을 하는 방식이 있다. S=Q라고 했을 때 test image size가 고정되고, multi scaling training방식에서는 0.5(256+512) = 384로 고정된다.
+
+
+
+<img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210712083413135.png">
+
+
+
+첫번째로 Local response normalisation이라는 AlexNet에서 사용된 기법을 이용한 모델과 그렇지 않은 모델 사이의 성능 향상이 두드러지지 않았기에 LRN을 사용하지 않았다.
+
+두번째로는 ConvNet의 깊이가 깊을 수록 classificaiton error가 줄어든다는 것이다. 특이하게도 앞서 말한 내용과는 달리 1X1 conv filter를 사용하고 있는 C 모델과 3X3 conv filter를 사용하고 있는 D모델을 비교했을 때 깊이가 더 앏은 3X3 conv filter를 사용한 D모델의 성능이 더 좋다는 점을 밝히고 있는데, 이는 깊이를 깊게 쌓을 수록 non linearity를 더 잘 표현할 수 있지만, 3X3 conv filter가 spatial context (공간이나 위치정보) 의 특징을 더 잘 추출하기 때문에 3X3 conv filter를 사용하는 것이 더 좋다는 것을 언급하고 있다. 
+
+### 4.2 Multi-scale evaluation
+
+<img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210712085417338.png">
+
+<img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210712085441829.png">
+
+Multi-scale evaluation은 test 이미지를 multi-scale로 설정해서 evaluation한 방식을 말한다. 하나의 S 사이즈에 대해 여러 test image로 evaluation하는 것을 볼 수 있다. training과 testing scale 과의 많은 차이는 성능의 감소를 불러오는데, 이를 위해 Q를 training과 가깝게 S-32, S, S+32로 설정한다. test time에서 scale jittering 은 single scale과 동일 모델로 비교했을 때, 더 좋은 성능을 가져온다고 한다. 
+
+### 4.3 Multi-crop evaluation & 4.4 ConvNet fusion
+
+<img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210712092730208.png">
+
+여기서는 dense evaluation 방식과 multi-crop evaluation을 이용한 validation 결과를 비교하고 있는데, multi-crop evaluation이 dense evaluation보다 살짝 더 좋으며, 저자는 두 방식의 결과의 평균을 통해서 구한 새로운 방식인 ConvNet fusion으로 validation한 결과를 이 다음에 보여주고 있다.
+
+
+
+### 4.5 Comparison with the state of the art
+
+<img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210712093154386.png">
+
+<img src = "C:\Users\Park Jun Tae\AppData\Roaming\Typora\typora-user-images\image-20210712093231498.png">
+
+ILSVRC 대회에서 제출을 위해 7개 모듈의 ensemble 기법을 적용했는데, 대회가 끝난 후 자체적으로 다시 실험한 결과 2개 모델(D,E)만 ensemble 한 결과가 더 좋았다고 한다.
 
 
 
