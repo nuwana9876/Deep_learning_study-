@@ -6,3 +6,4 @@
 4. VGGNet
 5. R-CNN 
 6. GoogLeNet
+7. ResNet
