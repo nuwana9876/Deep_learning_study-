@@ -8,4 +8,4 @@
 6. GoogLeNet
 7. ResNet
 8. OverFeat
-9. 
+9. SPPNet
