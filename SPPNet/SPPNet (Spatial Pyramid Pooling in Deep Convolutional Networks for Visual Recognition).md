@@ -126,13 +126,43 @@ R-CNN 방식을 요약하자면 selevtive search 방식으로 2000개의 candida
 SPPNet은 feature map의 region으로부터 window-wise feature를 추출한다. 반면 R-CNN은 image region에서부터 직접 구한다. 
 OverFeat detection의 경우 pre-define된 winndow-size를 구해야 했지만, SPPNet 경우 임의의 window에서 feature extraction이 가능하게 한다.  
 
+
+
+**SPPNet 장점**
+
+ (1) SPPnet은 CNN을 이미지에 한 번만 적용하여 속도가 빠르다.
+
+ (2) CNN으로 생성된 feature map에서 selective search를 적용하여 생성된 window에서 특징을 추출한다.
+
+ (3) feature map에서 임의의 크기 window로 특징 추출이 가능하다.
+
+ (4) 입력 이미지의 scale, size, aspect ratio에 영향을 받지 않는다.
+
+
+
+**SPPNet  동작 방식**
+
+(1) Selective Search를 사용하여 약 2000개의 region proposals를 생성한다.
+
+(2) 이미지를 CNN에 통과시켜 feature map을 얻는다.
+
+(3) 각 region proposal로 경계가 제한된 feature map을 SPP layer에 전달한다.
+
+(4) SPP layer를 적용하여 얻은 고정된 벡터 크기(representation)를 FC layer에 전달한다.
+
+(5) SVM으로 카테고리를 분류한다.
+
+(6) Bounding box regression으로 bounding box 크기를 조정하고 non-maximum suppression을 사용하여 최종 bounding box를 계산한다. 
+
+
+
 #### 4.1 Detection Algorithm
 
 거두절미하고 이 논문의 방식은 multi-scale feature extraction에 의해 성능이 향상될 수 있는데, 먼저 min(w,h) = s : {480,576,688,864,1200} 으로 resize한다. 이후 convolution layer 5개를 지나면서 feature map을 계산한다. 
 한가지 전략은 feature들을 모아서 channel-by-channel로 pooling 하는 방식을 처음에 제안했는데, 이는 경험적으로 두번째 방식이 더 나은 결과를 만들었기에 두번째 방식으로 넘어가도록 하자.
 두번째 방식은 각 candidate-window마다 s를 하나 선택하고,해당 크기로 scale된 candidate window는 224x224에 가까운 pixel의 수를 가지게 된다. 그 다음, 해당 window의 feature를 추출하기 위해 해당 크기로 추출된 feature map만을 사용한다. 즉, 이 방식은 candidate window의 개수에 관계없이,전체 image에서 한번만 해당 scale에 대해 feature map을 추출하는 것만 필요하다. 
 
-(내가 이해한 방식대로만 이야기하면 결국 R-CNN과 SPP-Net의 다른 점은 feature를 추출 시에, 전체이미지로 부터 feature를 가져오는가, 아니면 feature map으로부터 가져오는가 인데, 여기서 말하는건 해당 scale에 대해 candidate window가 있으면 그 window를 convolution해서 feature map을 구하고 해당 feature를 구하기위해 전체이미지를 계속 사용하는 것이 아닌, 해당 scale의  feature map만을 사용하는 것에 의미가 있다고 생각했다. ) 
+(내가 이해한 방식대로만 이야기하면 결국 R-CNN과 SPP-Net의 다른 점은 feature를 추출 시에, 전체이미지로 부터 feature를 가져오는가, 아니면 feature map으로부터 Selective search 방식을 통한 window로부터 가져오는가 인데, 여기서 말하는건 feature map에서 임의의 window로 특징 추출이 가능하며, 그 window를 통해 해당 feature를 구하는 것이라 생각했으며, 전체이미지를 계속 사용하는 것이 아닌, 임의의 크기 window로 특징을 추출 할 수 있는 점이 좋다는 것을 강조하고 싶은 것 같았다. ) 
 
 * pre-train된 network 사용. 이로 인해 앞부분의 feature extractor는 pre train 되어있으므로, 나머지 fc layer에 대해서만 fine-tune 했다.
 * conv5이후 fixed-length이므로, fc6,7은 21-way (one extra negative category) + fc8 layer로 구성되어있다.
@@ -144,3 +174,15 @@ OverFeat detection의 경우 pre-define된 winndow-size를 구해야 했지만, 
 bounding box regression에도 적용할 수 있는데, conv5를 통과한 feature 를 pooling 하고 나온 windows가 ground truth와 최소한 50% 이상 overlap되어야 regression training에 사용했다.
 
 ### 5. Conclusion
+
+이는 논문을 그대로 옮기는 게 더 이해가 쉬운 것 같아 논문을 발췌해 올립니다.
+
+<left><img src = "https://user-images.githubusercontent.com/78463348/130343326-e3ea2aa0-3b93-4de1-bacd-f8c9180ad233.png">
+
+
+
+> 참고 자료
+>
+> 1. 논문 : https://arxiv.org/abs/1406.4729
+> 2.  AI 꿈나무 님의 SPPNet 논문 리뷰 https://deep-learning-study.tistory.com/445
+
